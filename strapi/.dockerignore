@@ -1,0 +1,11 @@
+node_modules
+.tmp
+.cache
+build
+dist
+.strapi
+.env
+*.log
+.git
+coverage
+public/uploads

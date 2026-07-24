@@ -1,0 +1,10 @@
+CREATE DATABASE order_db;
+CREATE DATABASE inventory_db;
+CREATE DATABASE payment_db;
+CREATE DATABASE shipping_db;
+CREATE DATABASE saga_db;
+CREATE DATABASE returns_db;
+CREATE DATABASE customer_db;
+CREATE DATABASE catalog_db;
+CREATE DATABASE invoice_db;
+CREATE DATABASE strapi_db;

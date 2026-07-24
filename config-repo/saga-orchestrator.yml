@@ -1,0 +1,3 @@
+commerce:
+  outbox:
+    poll-ms: 500

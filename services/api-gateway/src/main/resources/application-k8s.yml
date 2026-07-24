@@ -1,0 +1,30 @@
+# Activate with SPRING_PROFILES_ACTIVE=k8s.
+# Downstream hosts are Kubernetes Service DNS names in the same namespace.
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector:4318/v1/traces}
+
+commerce:
+  gateway:
+    services:
+      order: ${ORDER_SERVICE_URL:http://order-service:8081}
+      inventory: ${INVENTORY_SERVICE_URL:http://inventory-service:8082}
+      payment: ${PAYMENT_SERVICE_URL:http://payment-service:8083}
+      shipping: ${SHIPPING_SERVICE_URL:http://shipping-service:8084}
+      saga: ${SAGA_SERVICE_URL:http://saga-orchestrator:8085}
+      customer: ${CUSTOMER_SERVICE_URL:http://customer-service:8087}
+      catalog: ${CATALOG_SERVICE_URL:http://catalog-service:8088}
+      invoice: ${INVOICE_SERVICE_URL:http://invoice-service:8089}

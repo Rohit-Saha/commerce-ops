@@ -1,0 +1,6 @@
+commerce:
+  shipping:
+    order-service:
+      base-url: ${ORDER_SERVICE_URL:http://order-service:8081}
+    saga-service:
+      base-url: ${SAGA_SERVICE_URL:http://saga-orchestrator:8085}

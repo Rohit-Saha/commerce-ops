@@ -1,0 +1,40 @@
+# Activate with SPRING_PROFILES_ACTIVE=oidc (and typically COMMERCE_SECURITY_MODE=oidc).
+# Frontends never talk to Keycloak: api-gateway is the OIDC BFF (authorization code + session cookie).
+commerce:
+  security:
+    mode: oidc
+  bff:
+    admin-frontend-url: ${BFF_ADMIN_FRONTEND_URL:http://localhost:5173}
+    storefront-frontend-url: ${BFF_STOREFRONT_FRONTEND_URL:http://localhost:5174}
+    refresh-skew-seconds: ${BFF_REFRESH_SKEW_SECONDS:60}
+
+spring:
+  session:
+    store-type: redis
+    timeout: 8h
+    redis:
+      namespace: commerce:gateway:session
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:8180/realms/commerce-ops}
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${OAUTH2_ISSUER_URI:http://localhost:8180/realms/commerce-ops}
+        registration:
+          admin-ui-bff:
+            provider: keycloak
+            client-id: admin-ui-bff
+            client-secret: ${KEYCLOAK_ADMIN_UI_BFF_SECRET:admin-ui-bff-secret}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/api/auth/callback/{registrationId}"
+            scope: openid,profile,email
+          storefront-bff:
+            provider: keycloak
+            client-id: storefront-bff
+            client-secret: ${KEYCLOAK_STOREFRONT_BFF_SECRET:storefront-bff-secret}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/api/auth/callback/{registrationId}"
+            scope: openid,profile,email

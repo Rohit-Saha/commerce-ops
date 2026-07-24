@@ -1,0 +1,15 @@
+# Non-secret api-gateway overlays (local defaults; classpath yml remains fallback).
+commerce:
+  gateway:
+    rate-limit:
+      limit: 30
+      window-seconds: 60
+    services:
+      order: ${ORDER_SERVICE_URL:http://localhost:8081}
+      inventory: ${INVENTORY_SERVICE_URL:http://localhost:8082}
+      payment: ${PAYMENT_SERVICE_URL:http://localhost:8083}
+      shipping: ${SHIPPING_SERVICE_URL:http://localhost:8084}
+      saga: ${SAGA_SERVICE_URL:http://localhost:8085}
+      customer: ${CUSTOMER_SERVICE_URL:http://localhost:8087}
+      catalog: ${CATALOG_SERVICE_URL:http://localhost:8088}
+      invoice: ${INVOICE_SERVICE_URL:http://localhost:8089}

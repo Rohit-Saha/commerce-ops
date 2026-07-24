@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: commerce-ops
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - apps/config-server.yaml
+  - apps/keycloak.yaml
+  - apps/api-gateway.yaml
+  - apps/order-service.yaml
+  - apps/inventory-service.yaml
+  - apps/payment-service.yaml
+  - apps/shipping-service.yaml
+  - apps/saga-orchestrator.yaml
+  - apps/returns-service.yaml
+  - apps/customer-service.yaml
+  - apps/catalog-service.yaml
+  - apps/invoice-service.yaml
+configMapGenerator:
+  - name: keycloak-realm
+    files:
+      - commerce-ops-realm.json=../keycloak/commerce-ops-realm.json
+generatorOptions:
+  disableNameSuffixHash: true

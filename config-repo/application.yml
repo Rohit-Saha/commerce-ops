@@ -1,0 +1,12 @@
+# Shared defaults served by config-server to all clients (non-secret).
+# Secrets stay in env / K8s Secret.
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+logging:
+  level:
+    root: INFO
+    com.commerceops: INFO

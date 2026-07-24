@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    @page { size: A4; margin: 24mm 18mm; }
+    body { font-family: sans-serif; font-size: 11px; color: #1a1a1a; }
+    h1 { font-size: 20px; margin: 0 0 4px 0; }
+    h2 { font-size: 13px; margin: 18px 0 6px 0; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
+    .muted { color: #555; }
+    .grid { width: 100%; margin-top: 12px; }
+    .grid td { vertical-align: top; width: 50%; padding-right: 12px; }
+    table.lines { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    table.lines th, table.lines td { border: 1px solid #ccc; padding: 5px 6px; }
+    table.lines th { background: #f3f3f3; text-align: left; font-size: 10px; }
+    td.num, th.num { text-align: right; }
+    .totals { width: 45%; margin-left: auto; margin-top: 12px; border-collapse: collapse; }
+    .totals td { padding: 4px 6px; }
+    .totals .label { color: #555; }
+    .totals .grand { font-weight: bold; border-top: 1px solid #333; }
+    .footer { margin-top: 28px; font-size: 10px; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Tax Invoice</h1>
+  <div class="muted">{{invoiceNumber}} · Issued {{issuedAt}}</div>
+
+  <table class="grid">
+    <tr>
+      <td>
+        <h2>Seller</h2>
+        <strong>{{sellerName}}</strong><br/>
+        GSTIN: {{sellerGstin}}<br/>
+        {{sellerAddress}}<br/>
+        State: {{sellerState}}
+      </td>
+      <td>
+        <h2>Bill / Ship To</h2>
+        {{buyerAddress}}
+      </td>
+    </tr>
+  </table>
+
+  <h2>References</h2>
+  <div>Order: {{orderId}}</div>
+  <div>Shipment: {{shipmentId}}</div>
+  <div>Payment ref: {{paymentRef}}</div>
+  <div>Currency: {{currency}} (prices tax-inclusive at 18% GST)</div>
+
+  <h2>Line items</h2>
+  <table class="lines">
+    <thead>
+      <tr>
+        <th>SKU</th>
+        <th class="num">Qty</th>
+        <th class="num">Unit (incl.)</th>
+        <th class="num">Taxable</th>
+        <th class="num">CGST</th>
+        <th class="num">SGST</th>
+        <th class="num">IGST</th>
+        <th class="num">Gross</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{lineRows}}
+    </tbody>
+  </table>
+
+  <table class="totals">
+    <tr><td class="label">Taxable value</td><td class="num">{{subtotal}}</td></tr>
+    <tr><td class="label">CGST</td><td class="num">{{cgst}}</td></tr>
+    <tr><td class="label">SGST</td><td class="num">{{sgst}}</td></tr>
+    <tr><td class="label">IGST</td><td class="num">{{igst}}</td></tr>
+    <tr class="grand"><td>Total (INR)</td><td class="num">{{total}}</td></tr>
+  </table>
+
+  <div class="footer">
+    This is a computer-generated tax invoice for demo purposes. Not a government e-invoice.
+  </div>
+</body>
+</html>

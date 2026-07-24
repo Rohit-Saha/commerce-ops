@@ -25,15 +25,14 @@ build/
 .env
 .env.*
 !.env.example
+deploy/k8s/secret.yaml
 
 # Logs
 *.log
 logs/
 
-# Docker volumes / data
+# Local runtime data
 data/
-postgres-data/
-kafka-data/
 
 # OS
 Thumbs.db

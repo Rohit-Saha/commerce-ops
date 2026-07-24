@@ -1,0 +1,9 @@
+commerce:
+  outbox:
+    poll-ms: 500
+  shipping:
+    failure-rate: 0.0
+    order-service:
+      base-url: ${ORDER_SERVICE_URL:http://localhost:8081}
+    saga-service:
+      base-url: ${SAGA_SERVICE_URL:http://localhost:8085}

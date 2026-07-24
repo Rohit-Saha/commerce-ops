@@ -1,0 +1,6 @@
+commerce:
+  catalog:
+    inventory-base-url: ${INVENTORY_BASE_URL:http://inventory-service:8082}
+    strapi-base-url: ${STRAPI_BASE_URL:http://strapi:1337}
+    public-strapi-url: ${STRAPI_PUBLIC_URL:http://strapi:1337}
+    elasticsearch-url: ${ELASTICSEARCH_URL:http://elasticsearch:9200}

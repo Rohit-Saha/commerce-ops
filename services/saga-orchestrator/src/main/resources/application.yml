@@ -1,0 +1,64 @@
+server:
+  port: 8085
+
+spring:
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+  application:
+    name: saga-orchestrator
+  datasource:
+    url: jdbc:postgresql://localhost:5433/saga_db
+    username: commerce
+    password: commerce
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: saga-orchestrator
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    listener:
+      ack-mode: RECORD
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  metrics:
+    tags:
+      application: saga-orchestrator
+
+commerce:
+  outbox:
+    poll-ms: 500
+  saga:
+    step-timeout-seconds: 30
+    timeout-scan-ms: 5000
+    max-retries: 3
+
+logging:
+  level:
+    com.commerceops.saga: INFO

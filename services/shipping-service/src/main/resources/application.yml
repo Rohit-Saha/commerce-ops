@@ -1,0 +1,104 @@
+server:
+  port: 8084
+
+spring:
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+  application:
+    name: shipping-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/shipping_db
+    username: ${DB_USER:commerce}
+    password: ${DB_PASSWORD:commerce}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: shipping-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+
+commerce:
+  shipping:
+    provider: ${SHIPPING_PROVIDER:simulated}
+    failure-rate: 0.0
+    default-weight-kg: 0.5
+    order-service:
+      base-url: ${ORDER_SERVICE_URL:http://localhost:8081}
+    saga-service:
+      base-url: ${SAGA_SERVICE_URL:http://localhost:8085}
+    shiprocket:
+      base-url: ${SHIPROCKET_BASE_URL:https://apiv2.shiprocket.in}
+      email: ${SHIPROCKET_EMAIL:}
+      password: ${SHIPROCKET_PASSWORD:}
+      pickup-location: ${SHIPROCKET_PICKUP_LOCATION:Primary}
+      webhook-token: ${SHIPROCKET_WEBHOOK_TOKEN:}
+      channel-id: ${SHIPROCKET_CHANNEL_ID:0}
+  outbox:
+    poll-ms: 500
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+  tracing:
+    sampling:
+      probability: 1.0
+
+logging:
+  level:
+    com.commerceops: INFO
+    io.github.resilience4j: INFO
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+        ignoreExceptions:
+          - org.springframework.web.client.HttpClientErrorException
+    instances:
+      shiprocket:
+        baseConfig: default
+      order:
+        baseConfig: default
+      saga:
+        baseConfig: default

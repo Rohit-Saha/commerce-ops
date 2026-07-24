@@ -1,0 +1,9 @@
+# Activate with SPRING_PROFILES_ACTIVE=k8s.
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector:4318/v1/traces}

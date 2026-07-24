@@ -1,0 +1,5 @@
+commerce:
+  outbox:
+    poll-ms: 500
+  payment:
+    failure-rate: 0.0
