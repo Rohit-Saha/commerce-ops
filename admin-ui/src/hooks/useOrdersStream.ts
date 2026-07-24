@@ -21,6 +21,10 @@ export function useOrdersStream(): StreamStatus {
 
   useEffect(() => {
     if (!authenticated) {
+      if (retryRef.current) {
+        clearTimeout(retryRef.current);
+        retryRef.current = undefined;
+      }
       setStatus("disconnected");
       return;
     }
@@ -53,7 +57,9 @@ export function useOrdersStream(): StreamStatus {
         if (cancelled) return;
         setStatus("disconnected");
         source?.close();
+        if (retryRef.current) clearTimeout(retryRef.current);
         retryRef.current = setTimeout(() => {
+          retryRef.current = undefined;
           connect();
         }, 4000);
       };
@@ -64,7 +70,11 @@ export function useOrdersStream(): StreamStatus {
     return () => {
       cancelled = true;
       source?.close();
-      if (retryRef.current) clearTimeout(retryRef.current);
+      source = null;
+      if (retryRef.current) {
+        clearTimeout(retryRef.current);
+        retryRef.current = undefined;
+      }
     };
   }, [queryClient, authenticated]);
 
